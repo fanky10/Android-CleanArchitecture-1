@@ -6,6 +6,10 @@ import android.widget.TextView;
 import com.globant.equattrocchio.cleanarchitecture.R;
 import com.globant.equattrocchio.cleanarchitecture.util.bus.RxBus;
 import com.globant.equattrocchio.cleanarchitecture.util.bus.observers.CallServiceButtonObserver;
+import com.globant.equattrocchio.domain.Image;
+import com.google.gson.Gson;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,5 +35,9 @@ public class ImagesView extends ActivityView {
 
     public void showError() {
         tvlabel.setText(R.string.connection_error);
+    }
+
+    public void showImagesString(List<Image> images) {
+        tvlabel.setText(new Gson().toJson(images));
     }
 }

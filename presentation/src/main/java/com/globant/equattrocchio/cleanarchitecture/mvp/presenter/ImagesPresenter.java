@@ -1,15 +1,16 @@
 package com.globant.equattrocchio.cleanarchitecture.mvp.presenter;
 
 import android.app.Activity;
+import android.util.Log;
 
-import com.globant.equattrocchio.cleanarchitecture.util.bus.RxBus;
 import com.globant.equattrocchio.cleanarchitecture.mvp.view.ImagesView;
+import com.globant.equattrocchio.cleanarchitecture.util.bus.RxBus;
 import com.globant.equattrocchio.cleanarchitecture.util.bus.observers.CallServiceButtonObserver;
-import com.globant.equattrocchio.data.ImagesServicesImpl;
 import com.globant.equattrocchio.domain.GetLatestImagesUseCase;
 
+import java.util.List;
+
 import io.reactivex.annotations.NonNull;
-import io.reactivex.observers.DefaultObserver;
 import io.reactivex.observers.DisposableObserver;
 
 public class ImagesPresenter {
@@ -32,26 +33,25 @@ public class ImagesPresenter {
 
     private void onCallServiceButtonPressed() {
 
-        getLatestImagesUseCase.execute(new DisposableObserver<Boolean>() {
+        getLatestImagesUseCase.execute(new DisposableObserver<List<com.globant.equattrocchio.domain.Image>>() {
             @Override
-            public void onNext(@NonNull Boolean aBoolean) {
-                loadFromPreferences();
+            public void onNext(@NonNull List<com.globant.equattrocchio.domain.Image> images) {
+                Log.d("fanky10","Well some images...");
+                view.showImagesString(images);
+
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
-               view.showError();
+                Log.d("fanky10","Oh an error :(");
+                e.printStackTrace();
             }
 
             @Override
             public void onComplete() {
-                new ImagesServicesImpl().getLatestImages(null);
+                Log.d("fanky10","Completed successfully! :D");
             }
-        },null);
-
-
-
-        //todo acá tengo que llamar a la domain layer para que llame a la data layer y haga el llamdo al servicio
+        }, null);
     }
 
     private void loadFromPreferences(){

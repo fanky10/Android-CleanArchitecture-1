@@ -1,5 +1,6 @@
 package com.globant.equattrocchio.domain;
 
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
@@ -14,14 +15,20 @@ public abstract class UseCase<T, Params> {
 
     abstract void buildUseCaseObservable(DisposableObserver<T> observer, Params params);
 
+    abstract Observable<T> buildUseCaseObservable();
+
     public void execute(DisposableObserver<T> observer, Params params) {
         Preconditions.checkNotNull(observer);
-        this.buildUseCaseObservable(observer, params);
-        addDisposable(observer);
+        Observable<T> observable = buildUseCaseObservable();
+        // todo: define actual thread executor and Looper.getMainLoop for returning callbacks
+//                .subscribeOn(Schedulers.from(threadExecutor))
+//                .observeOn(postExecutionThread.getScheduler());
+        addDisposable(observable.subscribeWith(observer));
     }
 
     public void execute(Params params) {
-        this.buildUseCaseObservable(null, params);
+        // nothing to observe, nothing to do
+        // this.buildUseCaseObservable(null, params);
     }
 
     /**

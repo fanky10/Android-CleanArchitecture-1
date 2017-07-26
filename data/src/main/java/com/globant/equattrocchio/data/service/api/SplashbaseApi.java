@@ -7,6 +7,7 @@ import retrofit2.http.GET;
 
 public interface SplashbaseApi {
 
-    @GET("api/v1/images/latest")
+    // avoid video preview images
+    @GET("api/v1/images/latest?images_only=true")
     Call<Result> getImages();
 }
